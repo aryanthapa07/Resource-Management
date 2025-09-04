@@ -65,7 +65,7 @@
   }
 
   .file-upload-zone.dragover {
-    @apply transform scale-105 border-primary-400 bg-primary-25;
+    @apply transform scale-105 border-primary-500 bg-primary-50;
   }
 
   .loading-spinner {
@@ -131,4 +131,50 @@
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+  .modal-content {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+  }
+  
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .mobile-card {
+    @apply block sm:hidden;
+  }
+  
+  .desktop-table {
+    @apply hidden sm:block;
+  }
+  
+  .mobile-stack {
+    @apply flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4;
+  }
+  
+  .mobile-full {
+    @apply w-full sm:w-auto;
+  }
+}
+
+/* Enhanced mobile touch targets */
+@media (max-width: 768px) {
+  .btn-primary, .btn-secondary {
+    @apply min-h-[44px] px-6;
+  }
+  
+  .input-field {
+    @apply min-h-[44px] text-base;
+  }
+  
+  .sort-header {
+    @apply min-h-[44px];
+  }
 }

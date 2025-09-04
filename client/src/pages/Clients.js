@@ -4,6 +4,7 @@ import { clientService } from '../services/clientService';
 import { formatSimpleDate, formatRole } from '../utils/helpers';
 import ClientModal from '../components/ClientModal';
 import ConfirmDialog from '../components/ConfirmDialog';
+import { PageLoader, TableSkeletonLoader } from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
 
 const Clients = () => {
@@ -99,14 +100,37 @@ const Clients = () => {
   };
 
   const getSortIcon = (column) => {
-    if (filters.sortBy !== column) return '↕️';
-    return filters.sortOrder === 'asc' ? '↑' : '↓';
+    if (filters.sortBy !== column) {
+      return <span className="text-gray-400 ml-1 text-xs">↕️</span>;
+    }
+    return (
+      <span className="text-primary-600 ml-1 text-xs">
+        {filters.sortOrder === 'asc' ? '↗️' : '↘️'}
+      </span>
+    );
   };
 
   if (loading && clients.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Clients</h1>
+            <p className="text-gray-600">Manage your client relationships and documents</p>
+          </div>
+          <div className="animate-pulse bg-gray-200 h-10 w-28 rounded-lg"></div>
+        </div>
+        <div className="card p-6">
+          <div className="flex flex-col lg:flex-row gap-4 mb-6">
+            <div className="flex-1 animate-pulse bg-gray-200 h-10 rounded-lg"></div>
+            <div className="flex gap-4">
+              <div className="animate-pulse bg-gray-200 h-10 w-32 rounded-lg"></div>
+              <div className="animate-pulse bg-gray-200 h-10 w-32 rounded-lg"></div>
+              <div className="animate-pulse bg-gray-200 h-20 w-32 rounded-lg"></div>
+            </div>
+          </div>
+          <TableSkeletonLoader rows={5} columns={7} />
+        </div>
       </div>
     );
   }
@@ -126,22 +150,22 @@ const Clients = () => {
         </button>
       </div>
 
-      <div className="card p-6">
-        <div className="flex flex-col lg:flex-row gap-4 mb-6">
-          <div className="flex-1">
+      <div className="card p-4 sm:p-6">
+        <div className="space-y-4 mb-6">
+          <div className="w-full">
             <input
               type="text"
               placeholder="Search clients..."
               value={filters.search}
               onChange={handleSearch}
-              className="input-field"
+              className="input-field w-full"
             />
           </div>
-          <div className="flex gap-4">
+          <div className="mobile-stack">
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange('status', e.target.value)}
-              className="input-field"
+              className="input-field mobile-full"
             >
               <option value="">All Statuses</option>
               <option value="active">Active</option>
@@ -152,7 +176,7 @@ const Clients = () => {
             <select
               value={filters.currency}
               onChange={(e) => handleFilterChange('currency', e.target.value)}
-              className="input-field"
+              className="input-field mobile-full"
             >
               <option value="">All Currencies</option>
               <option value="USD">USD</option>
@@ -161,47 +185,54 @@ const Clients = () => {
               <option value="CAD">CAD</option>
               <option value="AUD">AUD</option>
             </select>
-            <div className="flex rounded-lg border border-gray-300">
+            <div className="flex rounded-lg border border-gray-300 mobile-full">
               <button
                 onClick={() => setViewMode('table')}
-                className={`px-3 py-2 text-sm font-medium ${
+                className={`flex-1 sm:flex-none px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                   viewMode === 'table'
                     ? 'bg-primary-600 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                📋 Table
+                <span className="hidden sm:inline">📋 Table</span>
+                <span className="sm:hidden">📋</span>
               </button>
               <button
                 onClick={() => setViewMode('cards')}
-                className={`px-3 py-2 text-sm font-medium ${
+                className={`flex-1 sm:flex-none px-3 py-2 text-sm font-medium transition-colors duration-200 ${
                   viewMode === 'cards'
                     ? 'bg-primary-600 text-white'
                     : 'bg-white text-gray-700 hover:bg-gray-50'
                 }`}
               >
-                🃏 Cards
+                <span className="hidden sm:inline">🃏 Cards</span>
+                <span className="sm:hidden">🃏</span>
               </button>
             </div>
           </div>
         </div>
 
         {viewMode === 'table' ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+          <div className="desktop-table">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="sort-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     onClick={() => handleSort('name')}
                   >
-                    Name {getSortIcon('name')}
+                    <div className="flex items-center">
+                      Name {getSortIcon('name')}
+                    </div>
                   </th>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="sort-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     onClick={() => handleSort('code')}
                   >
-                    Code {getSortIcon('code')}
+                    <div className="flex items-center">
+                      Code {getSortIcon('code')}
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
@@ -213,10 +244,12 @@ const Clients = () => {
                     Documents
                   </th>
                   <th
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
+                    className="sort-header px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     onClick={() => handleSort('createdAt')}
                   >
-                    Created {getSortIcon('createdAt')}
+                    <div className="flex items-center">
+                      Created {getSortIcon('createdAt')}
+                    </div>
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
@@ -224,8 +257,12 @@ const Clients = () => {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {clients.map((client) => (
-                  <tr key={client._id} className="hover:bg-gray-50">
+                {clients.map((client, index) => (
+                  <tr 
+                    key={client._id} 
+                    className="table-row fade-in"
+                    style={{ animationDelay: `${index * 0.05}s` }}
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">
@@ -283,12 +320,20 @@ const Clients = () => {
                   </tr>
                 ))}
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {clients.map((client) => (
-              <div key={client._id} className="card p-6 hover:shadow-lg transition-shadow">
+        ) : null}
+
+        {/* Mobile Card View - Always show on mobile, show when cards selected on desktop */}
+        {viewMode === 'cards' || true ? (
+          <div className={`grid grid-cols-1 ${viewMode === 'cards' ? 'md:grid-cols-2 lg:grid-cols-3' : ''} gap-4 sm:gap-6 ${viewMode === 'table' ? 'mobile-card' : ''}`}>
+            {clients.map((client, index) => (
+              <div 
+                key={client._id} 
+                className="card p-4 sm:p-6 zoom-in"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -341,7 +386,7 @@ const Clients = () => {
               </div>
             ))}
           </div>
-        )}
+        ) : null}
 
         {clients.length === 0 && !loading && (
           <div className="text-center py-12">
