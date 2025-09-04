@@ -190,13 +190,14 @@ clientSchema.index({ status: 1 });
 clientSchema.index({ engagementManager: 1 });
 clientSchema.index({ createdAt: -1 });
 
-clientSchema.virtual('documentCount').get(function() {
-  return this.documents.length;
-});
+// Temporarily commented out problematic virtual properties
+// clientSchema.virtual('documentCount').get(function() {
+//   return this.documents ? this.documents.length : 0;
+// });
 
-clientSchema.virtual('activeProjects').get(function() {
-  return this.projects.length;
-});
+// clientSchema.virtual('activeProjects').get(function() {
+//   return this.projects ? this.projects.length : 0;
+// });
 
 clientSchema.methods.addDocument = function(documentData) {
   this.documents.push(documentData);
@@ -217,7 +218,7 @@ clientSchema.methods.addNote = function(content, authorId) {
 };
 
 clientSchema.set('toJSON', { 
-  virtuals: true,
+  virtuals: false,
   transform: function(doc, ret) {
     delete ret.__v;
     return ret;

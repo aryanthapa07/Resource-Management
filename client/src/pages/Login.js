@@ -31,7 +31,7 @@ const Login = () => {
 
   useEffect(() => {
     return () => clearError();
-  }, [clearError]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,8 +46,6 @@ const Login = () => {
         [name]: ''
       }));
     }
-    
-    clearError();
   };
 
   const validateForm = () => {
