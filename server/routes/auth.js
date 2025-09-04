@@ -9,6 +9,7 @@ const {
   changePassword
 } = require('../controllers/authController');
 const { auth } = require('../middleware/auth');
+const User = require('../models/User');
 
 const router = express.Router();
 
@@ -79,5 +80,44 @@ router.post('/logout', auth, logout);
 router.get('/profile', auth, getProfile);
 router.put('/profile', auth, updateProfileValidation, updateProfile);
 router.put('/change-password', auth, changePasswordValidation, changePassword);
+
+// Get users for dropdowns (PM selection, team members, etc.)
+router.get('/users', auth, async (req, res) => {
+  try {
+    const { role, search, limit = 50 } = req.query;
+    
+    let query = { isActive: true };
+    
+    // Filter by role if specified
+    if (role) {
+      query.role = role;
+    }
+    
+    // Search by name or email if specified
+    if (search) {
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { email: { $regex: search, $options: 'i' } }
+      ];
+    }
+
+    const users = await User.find(query)
+      .select('name email role department profile.skills')
+      .populate('department', 'name code')
+      .sort('name')
+      .limit(parseInt(limit));
+
+    res.json({
+      success: true,
+      data: { users }
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error fetching users'
+    });
+  }
+});
 
 module.exports = router;

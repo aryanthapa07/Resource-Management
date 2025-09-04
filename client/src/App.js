@@ -9,6 +9,8 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Clients from './pages/Clients';
 import ClientDetail from './pages/ClientDetail';
+import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
 
 function App() {
   return (
@@ -111,11 +113,16 @@ function App() {
               <Route
                 path="projects"
                 element={
-                  <ProtectedRoute requiredRoles={['engagement_manager']}>
-                    <div className="text-center p-8">
-                      <h2 className="text-2xl font-bold text-gray-900 mb-4">My Projects</h2>
-                      <p className="text-gray-600">This feature is coming soon!</p>
-                    </div>
+                  <ProtectedRoute requiredRoles={['admin', 'engagement_manager', 'resource_manager']}>
+                    <Projects />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="projects/:projectId"
+                element={
+                  <ProtectedRoute requiredRoles={['admin', 'engagement_manager', 'resource_manager']}>
+                    <ProjectDetail />
                   </ProtectedRoute>
                 }
               />

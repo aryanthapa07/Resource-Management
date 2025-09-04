@@ -18,11 +18,13 @@ const Navigation = () => {
     const roleSpecificItems = {
       admin: [
         { path: '/clients', label: 'Clients', icon: '🏢' },
+        { path: '/projects', label: 'Projects', icon: '📁' },
         { path: '/users', label: 'Users', icon: '👥' },
         { path: '/departments', label: 'Departments', icon: '🏛️' },
         { path: '/reports', label: 'Reports', icon: '📈' }
       ],
       resource_manager: [
+        { path: '/projects', label: 'Projects', icon: '📁' },
         { path: '/team', label: 'My Team', icon: '👥' },
         { path: '/allocations', label: 'Allocations', icon: '📋' },
         { path: '/requests', label: 'Requests', icon: '📝' }

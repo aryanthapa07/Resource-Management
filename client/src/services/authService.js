@@ -76,6 +76,23 @@ export const authService = {
     }
   },
 
+  async getUsers(params = {}) {
+    try {
+      const queryParams = new URLSearchParams();
+      
+      Object.keys(params).forEach(key => {
+        if (params[key] !== undefined && params[key] !== '') {
+          queryParams.append(key, params[key]);
+        }
+      });
+      
+      const response = await api.get(`/auth/users?${queryParams}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to get users' };
+    }
+  },
+
   getToken() {
     return Cookies.get(TOKEN_KEY);
   },

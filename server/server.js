@@ -45,6 +45,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/clients", require("./routes/clients"));
+app.use("/api/projects", require("./routes/projects"));
 
 app.use((req, res) => {
   res.status(404).json({
